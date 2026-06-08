@@ -52,6 +52,7 @@ export default defineConfig({
           items: [
             { text: "11. APIRequestContext", link: "/chapters/11-apirequestcontext" },
             { text: "12. API auth & sessions", link: "/chapters/12-api-auth" },
+            { text: "13. CRUD API suites", link: "/chapters/13-crud-suites" },
           ],
         },
       ],

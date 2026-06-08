@@ -46,5 +46,9 @@
   "12-api-auth": {
     "id": 3850261,
     "slug": "auth-sessions-for-the-api-layer-playwright-typescript-ch12-1k4-temp-slug-1674393"
+  },
+  "13-crud-suites": {
+    "id": 3850305,
+    "slug": "building-crud-api-suites-playwright-typescript-ch13-1930-temp-slug-4129916"
   }
 }
