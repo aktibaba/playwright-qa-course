@@ -24,9 +24,13 @@ export default defineConfig({
   expect: { timeout: env.name === "local" ? 5_000 : 10_000 },
   // Stamped into the HTML report so you always know which environment ran.
   metadata: { environment: env.name, webURL: env.webURL, apiURL: env.apiURL },
-  // Console "list" output plus an HTML report (with traces/screenshots) on every
-  // run — open it with `npm run test:report`. See Chapter 6 on debugging.
-  reporter: [["list"], ["html", { open: "never" }]],
+  // Console "list" for humans, an HTML report (traces/screenshots) you open with
+  // `npm run test:report`, and JUnit XML for CI to ingest. See Ch.6 and Ch.20.
+  reporter: [
+    ["list"],
+    ["html", { open: "never" }],
+    ["junit", { outputFile: "test-results/junit.xml" }],
+  ],
 
   use: {
     trace: "on-first-retry",

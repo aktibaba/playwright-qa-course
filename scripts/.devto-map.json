@@ -74,5 +74,9 @@
   "19-parallelism-and-flake": {
     "id": 3850538,
     "slug": "parallelism-flake-control-playwright-typescript-ch19-446m-temp-slug-3876552"
+  },
+  "20-reporters-and-observability": {
+    "id": 3850576,
+    "slug": "reporters-observability-playwright-typescript-ch20-4fko-temp-slug-7420997"
   }
 }

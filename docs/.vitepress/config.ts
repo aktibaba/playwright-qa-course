@@ -69,6 +69,7 @@ export default defineConfig({
           items: [
             { text: "18. Multi-env configuration", link: "/chapters/18-multi-env-config" },
             { text: "19. Parallelism & flake", link: "/chapters/19-parallelism-and-flake" },
+            { text: "20. Reporters & observability", link: "/chapters/20-reporters-and-observability" },
           ],
         },
       ],
