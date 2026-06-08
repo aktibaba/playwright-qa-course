@@ -77,6 +77,7 @@ export default defineConfig({
           text: "Part 6 — Advanced & Capstone",
           items: [
             { text: "22. Mocking, visual & a11y", link: "/chapters/22-advanced-techniques" },
+            { text: "23. Stability at scale", link: "/chapters/23-stability-at-scale" },
           ],
         },
       ],

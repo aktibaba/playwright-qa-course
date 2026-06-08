@@ -2,11 +2,13 @@ import { test as base } from "@playwright/test";
 import { LoginPage } from "@pages/LoginPage";
 import { ArticleEditorPage } from "@pages/ArticleEditorPage";
 import { ArticlePage } from "@pages/ArticlePage";
+import { SettingsPage } from "@pages/SettingsPage";
 
 export interface PageFixtures {
   loginPage: LoginPage;
   articleEditorPage: ArticleEditorPage;
   articlePage: ArticlePage;
+  settingsPage: SettingsPage;
 }
 
 export const test = base.extend<PageFixtures>({
@@ -20,5 +22,8 @@ export const test = base.extend<PageFixtures>({
   },
   articlePage: async ({ page }, use) => {
     await use(new ArticlePage(page));
+  },
+  settingsPage: async ({ page }, use) => {
+    await use(new SettingsPage(page));
   },
 });

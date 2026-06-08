@@ -1,5 +1,6 @@
 import type { APIRequestContext } from "@playwright/test";
 import { articleData, type ArticleInput } from "@data/article";
+import { uniqueId } from "@utils/unique";
 
 export type { ArticleInput };
 
@@ -38,8 +39,6 @@ export interface RegisteredUser {
   token: string;
 }
 
-let userSeq = 0;
-
 /**
  * Register a brand-new, unique user through the API. Useful when a test needs a
  * fresh identity it fully controls (e.g. follow/unfollow without contending on a
@@ -49,9 +48,7 @@ export async function registerUser(
   api: APIRequestContext,
   overrides: Partial<Pick<RegisteredUser, "username" | "email" | "password">> = {},
 ): Promise<RegisteredUser> {
-  userSeq += 1;
-  const stamp = `${Date.now()}${userSeq}${Math.floor(Math.random() * 1000)}`;
-  const username = overrides.username ?? `user${stamp}`;
+  const username = overrides.username ?? uniqueId("user");
   const email = overrides.email ?? `${username}@test.io`;
   const password = overrides.password ?? "Password123!";
 

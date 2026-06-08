@@ -82,5 +82,9 @@
   "21-ci-github-actions": {
     "id": 3850709,
     "slug": "cicd-with-github-actions-sharding-playwright-typescript-ch21-3f7m"
+  },
+  "22-advanced-techniques": {
+    "id": 3851247,
+    "slug": "advanced-network-mocking-visual-accessibility-playwright-typescript-ch22-39na-temp-slug-1960611"
   }
 }
