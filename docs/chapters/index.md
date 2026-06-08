@@ -20,5 +20,6 @@ carries a matching git tag in the companion repo.
 - [7. Custom fixtures: beyond beforeEach](/chapters/07-custom-fixtures)
 - [8. POM-as-fixture & the beforeAll trap](/chapters/08-pom-as-fixture)
 - [9. Fixture composition & a single import](/chapters/09-composition-and-imports)
+- [10. Worker vs test scope & layer rules](/chapters/10-scopes-and-layers)
 
 _More chapters land here as each milestone's code does._

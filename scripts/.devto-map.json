@@ -34,5 +34,9 @@
   "09-composition-and-imports": {
     "id": 3850093,
     "slug": "fixture-composition-a-single-import-surface-playwright-typescript-ch9-3053-temp-slug-2809451"
+  },
+  "10-scopes-and-layers": {
+    "id": 3850129,
+    "slug": "worker-vs-test-scope-the-layer-rules-playwright-typescript-ch10-173e-temp-slug-3377284"
   }
 }

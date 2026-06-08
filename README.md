@@ -78,6 +78,7 @@ Each chapter pairs prose with code at a git tag. Browse the code at any tag with
 | `ch-07` | Custom fixtures: beyond `beforeEach` | [source](docs/chapters/07-custom-fixtures.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-07) |
 | `ch-08` | POM-as-fixture & the `beforeAll` trap | [source](docs/chapters/08-pom-as-fixture.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-08) |
 | `ch-09` | Fixture composition & a single import | [source](docs/chapters/09-composition-and-imports.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-09) |
+| `ch-10` | Worker vs test scope & layer rules | [source](docs/chapters/10-scopes-and-layers.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-10) |
 
 > Parts 3–6 (API testing, API+UI integration, scaling & CI, advanced & capstone)
 > are on the way — see [`docs/planning/`](docs/planning/) for the full 25-chapter
