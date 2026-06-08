@@ -8,4 +8,8 @@ carries a matching git tag in the companion repo.
 - [1. Why a framework](/chapters/01-why-a-framework)
 - [2. Setup & your first UI + API tests](/chapters/02-setup-and-first-tests)
 
+## Part 1 — UI Core
+
+- [3. Locators & web-first assertions](/chapters/03-locators-and-assertions)
+
 _More chapters land here as each milestone's code does._

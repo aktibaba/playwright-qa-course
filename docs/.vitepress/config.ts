@@ -29,6 +29,12 @@ export default defineConfig({
             { text: "2. Setup & first tests", link: "/chapters/02-setup-and-first-tests" },
           ],
         },
+        {
+          text: "Part 1 — UI Core",
+          items: [
+            { text: "3. Locators & assertions", link: "/chapters/03-locators-and-assertions" },
+          ],
+        },
       ],
     },
 
