@@ -73,6 +73,12 @@ export default defineConfig({
             { text: "21. CI/CD & sharding", link: "/chapters/21-ci-github-actions" },
           ],
         },
+        {
+          text: "Part 6 — Advanced & Capstone",
+          items: [
+            { text: "22. Mocking, visual & a11y", link: "/chapters/22-advanced-techniques" },
+          ],
+        },
       ],
     },
 

@@ -27,7 +27,9 @@
  */
 
 :root {
-  --brand: #33aa44;
+  /* Darkened to meet WCAG AA contrast (4.5:1) as text on white and behind white
+     button text. Was #33aa44 (only 3.01:1). */
+  --brand: #2e7d32;
   --brand-hover: #2b8e3a;
   --brand-active: #237630;
   --brand-dark: #237630;
@@ -37,12 +39,14 @@
   --danger-light: #d7a3a3;
 
   --secondary: #ccc;
-  --secondary-hover: #b3b3b3;
+  /* Darkened from #b3b3b3 (2.09:1) — it doubles as the navbar link color. */
+  --secondary-hover: #6e6e6e;
   --secondary-border: #adadad;
 
   --text: #373a3c;
-  --text-muted: #999;
-  --text-light: #bbb;
+  /* Darkened from #999 (2.84:1) so muted text meets AA contrast. */
+  --text-muted: #6e6e6e;
+  --text-light: #6e6e6e;
   --text-lighter: #aaa;
   --text-disabled: #818a91;
 
@@ -835,7 +839,8 @@ fieldset[disabled] a.btn {
 }
 
 .navbar-light .navbar-nav .nav-link {
-  color: rgba(0, 0, 0, 0.3);
+  /* Was rgba(0,0,0,.3) ≈ 2.1:1 — darkened to meet AA contrast. */
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .navbar-light .navbar-nav .nav-link:focus,

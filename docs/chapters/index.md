@@ -42,4 +42,8 @@ carries a matching git tag in the companion repo.
 - [20. Reporters & observability](/chapters/20-reporters-and-observability)
 - [21. CI/CD with GitHub Actions & sharding](/chapters/21-ci-github-actions)
 
+## Part 6 — Advanced & Capstone
+
+- [22. Network mocking, visual & accessibility](/chapters/22-advanced-techniques)
+
 _More chapters land here as each milestone's code does._

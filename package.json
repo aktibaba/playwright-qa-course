@@ -17,6 +17,7 @@
     "blog:devto": "node --env-file=.env scripts/devto-sync.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.2",
     "gray-matter": "^4.0.3",
