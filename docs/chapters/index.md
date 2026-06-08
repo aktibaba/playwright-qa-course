@@ -48,5 +48,4 @@ carries a matching git tag in the companion repo.
 - [23. Stability & maintainability at scale](/chapters/23-stability-at-scale)
 - [24. Framework maturation & docs](/chapters/24-maturation-and-docs)
 - [25. Reporting: custom reporters & result visibility](/chapters/25-reporting)
-
-_More chapters land here as each milestone's code does._
+- [26. Capstone: a 100-test suite, end to end](/chapters/26-capstone)

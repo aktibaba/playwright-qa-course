@@ -80,6 +80,7 @@ export default defineConfig({
             { text: "23. Stability at scale", link: "/chapters/23-stability-at-scale" },
             { text: "24. Maturation & docs", link: "/chapters/24-maturation-and-docs" },
             { text: "25. Reporting", link: "/chapters/25-reporting" },
+            { text: "26. Capstone", link: "/chapters/26-capstone" },
           ],
         },
         {

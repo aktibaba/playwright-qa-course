@@ -4,7 +4,7 @@ import { test, expect } from "@fixtures";
 // Inkwell's RealWorld API: status codes, JSON shape, query params, and errors.
 // Data is seeded once by global-setup; the `api` fixture is the request context.
 test.describe("Articles API (read)", () => {
-  test("GET /articles lists the seeded article", async ({ api }) => {
+  test("GET /articles returns a well-formed article list", async ({ api }) => {
     const res = await api.get("articles");
 
     expect(res.status()).toBe(200);
@@ -13,9 +13,10 @@ test.describe("Articles API (read)", () => {
     const body = await res.json();
     expect(typeof body.articlesCount).toBe("number");
     expect(Array.isArray(body.articles)).toBe(true);
-
-    const slugs = body.articles.map((a: { slug: string }) => a.slug);
-    expect(slugs).toContain("welcome-to-inkwell");
+    // Shape, not a specific item: the unfiltered list is page-limited and other
+    // tests add articles concurrently, so don't assert a particular slug here.
+    expect(body.articles[0]).toHaveProperty("slug");
+    expect(body.articles[0].author).toHaveProperty("username");
   });
 
   test("GET /articles respects the limit query param", async ({ api }) => {

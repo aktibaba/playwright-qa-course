@@ -3,12 +3,14 @@ import { LoginPage } from "@pages/LoginPage";
 import { ArticleEditorPage } from "@pages/ArticleEditorPage";
 import { ArticlePage } from "@pages/ArticlePage";
 import { SettingsPage } from "@pages/SettingsPage";
+import { SignUpPage } from "@pages/SignUpPage";
 
 export interface PageFixtures {
   loginPage: LoginPage;
   articleEditorPage: ArticleEditorPage;
   articlePage: ArticlePage;
   settingsPage: SettingsPage;
+  signUpPage: SignUpPage;
 }
 
 export const test = base.extend<PageFixtures>({
@@ -25,5 +27,8 @@ export const test = base.extend<PageFixtures>({
   },
   settingsPage: async ({ page }, use) => {
     await use(new SettingsPage(page));
+  },
+  signUpPage: async ({ page }, use) => {
+    await use(new SignUpPage(page));
   },
 });

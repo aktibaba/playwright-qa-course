@@ -94,5 +94,9 @@
   "24-maturation-and-docs": {
     "id": 3851910,
     "slug": "framework-maturation-docs-playwright-typescript-ch24-3lfj-temp-slug-3120376"
+  },
+  "25-reporting": {
+    "id": 3851923,
+    "slug": "reporting-custom-reporters-result-visibility-playwright-typescript-ch25-2e8m-temp-slug-1393267"
   }
 }
