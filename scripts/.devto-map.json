@@ -66,5 +66,9 @@
   "17-test-data-and-env": {
     "id": 3850449,
     "slug": "test-data-factories-environment-config-playwright-typescript-ch17-58n8-temp-slug-5546912"
+  },
+  "18-multi-env-config": {
+    "id": 3850489,
+    "slug": "multi-environment-configuration-playwright-typescript-ch18-3kja-temp-slug-6510099"
   }
 }

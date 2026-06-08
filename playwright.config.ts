@@ -1,19 +1,29 @@
 import { defineConfig, devices } from "@playwright/test";
 import { env } from "./src/utils/env";
 
-// One project per layer for now: a fast API project and a Chromium UI project.
-// Both target the dockerized Inkwell SUT (run `docker compose up -d --build --wait`
-// in ./sut first). As the course progresses this grows into multi-env projects,
-// storageState auth, and sharding.
+// The whole config is driven by `env` (Ch.17) and CI. Pick a target with
+// TEST_ENV; baseURLs, retries, workers, and timeouts all follow from it. Run the
+// dockerized Inkwell SUT first (`docker compose up -d --build --wait` in ./sut).
+const isCI = !!process.env.CI;
+
+// Remote environments are flakier (network), so allow a retry; local stays at 0
+// to surface real failures immediately.
+const retries = isCI ? 2 : env.name === "staging" ? 1 : 0;
+
 export default defineConfig({
   testDir: "./src/tests",
   // Seed the database once, before everything. No test resets it itself, so read
   // tests never race a mid-run wipe.
   globalSetup: "./src/setup/global-setup.ts",
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  forbidOnly: isCI,
+  retries,
+  workers: isCI ? 4 : undefined,
+  // A bit more headroom for slower remote targets.
+  timeout: env.name === "local" ? 30_000 : 60_000,
+  expect: { timeout: env.name === "local" ? 5_000 : 10_000 },
+  // Stamped into the HTML report so you always know which environment ran.
+  metadata: { environment: env.name, webURL: env.webURL, apiURL: env.apiURL },
   // Console "list" output plus an HTML report (with traces/screenshots) on every
   // run — open it with `npm run test:report`. See Chapter 6 on debugging.
   reporter: [["list"], ["html", { open: "never" }]],

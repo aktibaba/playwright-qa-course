@@ -35,4 +35,8 @@ carries a matching git tag in the companion repo.
 - [16. Seed via API, verify in UI](/chapters/16-seed-via-api)
 - [17. Test data factories & environment config](/chapters/17-test-data-and-env)
 
+## Part 5 — Scaling, Config & CI
+
+- [18. Multi-environment configuration](/chapters/18-multi-env-config)
+
 _More chapters land here as each milestone's code does._

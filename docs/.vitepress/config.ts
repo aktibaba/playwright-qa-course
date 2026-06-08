@@ -64,6 +64,12 @@ export default defineConfig({
             { text: "17. Test data & env config", link: "/chapters/17-test-data-and-env" },
           ],
         },
+        {
+          text: "Part 5 — Scaling, Config & CI",
+          items: [
+            { text: "18. Multi-env configuration", link: "/chapters/18-multi-env-config" },
+          ],
+        },
       ],
     },
 
