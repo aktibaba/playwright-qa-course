@@ -70,5 +70,9 @@
   "18-multi-env-config": {
     "id": 3850489,
     "slug": "multi-environment-configuration-playwright-typescript-ch18-3kja-temp-slug-6510099"
+  },
+  "19-parallelism-and-flake": {
+    "id": 3850538,
+    "slug": "parallelism-flake-control-playwright-typescript-ch19-446m-temp-slug-3876552"
   }
 }

@@ -38,5 +38,6 @@ carries a matching git tag in the companion repo.
 ## Part 5 — Scaling, Config & CI
 
 - [18. Multi-environment configuration](/chapters/18-multi-env-config)
+- [19. Parallelism & flake control](/chapters/19-parallelism-and-flake)
 
 _More chapters land here as each milestone's code does._

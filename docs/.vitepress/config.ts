@@ -68,6 +68,7 @@ export default defineConfig({
           text: "Part 5 — Scaling, Config & CI",
           items: [
             { text: "18. Multi-env configuration", link: "/chapters/18-multi-env-config" },
+            { text: "19. Parallelism & flake", link: "/chapters/19-parallelism-and-flake" },
           ],
         },
       ],

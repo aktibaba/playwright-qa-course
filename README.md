@@ -102,6 +102,7 @@ Each chapter pairs prose with code at a git tag. Browse the code at any tag with
 | Tag | Chapter | Read | Code |
 |-----|---------|------|------|
 | `ch-18` | Multi-environment configuration | [source](docs/chapters/18-multi-env-config.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-18) |
+| `ch-19` | Parallelism & flake control | [source](docs/chapters/19-parallelism-and-flake.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-19) |
 
 > Parts 3–6 (API testing, API+UI integration, scaling & CI, advanced & capstone)
 > are on the way — see [`docs/planning/`](docs/planning/) for the full 25-chapter
