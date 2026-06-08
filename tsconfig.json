@@ -17,5 +17,5 @@
       "@data/*": ["./src/fixtures-data/*"]
     }
   },
-  "include": ["src", "playwright.config.ts"]
+  "include": ["src", "reporters", "playwright.config.ts"]
 }

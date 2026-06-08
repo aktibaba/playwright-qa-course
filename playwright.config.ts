@@ -30,6 +30,7 @@ export default defineConfig({
     ["list"],
     ["html", { open: "never" }],
     ["junit", { outputFile: "test-results/junit.xml" }],
+    ["./reporters/summary-reporter.ts"], // custom summary — see Ch.25
   ],
 
   use: {
