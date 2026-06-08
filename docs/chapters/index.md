@@ -15,4 +15,8 @@ carries a matching git tag in the companion repo.
 - [5. Forms & native dialogs](/chapters/05-forms-and-dialogs)
 - [6. Debugging & developer experience](/chapters/06-debugging)
 
+## Part 2 — Fixtures & Architecture
+
+- [7. Custom fixtures: beyond beforeEach](/chapters/07-custom-fixtures)
+
 _More chapters land here as each milestone's code does._

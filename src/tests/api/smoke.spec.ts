@@ -1,24 +1,16 @@
-import { test, expect } from "@playwright/test";
-import { env } from "@utils/env";
+import { test, expect } from "@fixtures";
 
-// API smoke — proves the dockerized Inkwell API is up, the test endpoints work,
-// and seeding is deterministic. Paths are built from env.apiURL explicitly so
-// there's no baseURL/relative-path ambiguity (a relative "/test" would drop the
-// "/api" prefix). A dedicated api fixture replaces this boilerplate in Part 3.
+// API smoke — now using the `api` fixture (an APIRequestContext pre-pointed at the
+// Inkwell API). No more `${env.apiURL}` prefixes, no leading-slash trap: paths are
+// plain relatives like "test/reset".
 //
-// Serial mode: every test here shares one database, and /test/reset drops &
-// recreates every table. Running them in parallel would let one test wipe the
-// schema mid-request for another. We reset ONCE up front, then run in order.
+// Serial: every test shares one database and /test/reset drops every table, so the
+// first test reseeds and the rest run in order. (Per-test isolation: Part 4.)
 test.describe.configure({ mode: "serial" });
 
 test.describe("Inkwell API smoke", () => {
-  test.beforeAll(async ({ request }) => {
-    const res = await request.post(`${env.apiURL}/test/reset`);
-    expect(res.ok()).toBeTruthy();
-  });
-
-  test("reset returns known seed data", async ({ request }) => {
-    const res = await request.post(`${env.apiURL}/test/reset`);
+  test("reset returns known seed data", async ({ api }) => {
+    const res = await api.post("test/reset");
     expect(res.ok()).toBeTruthy();
 
     const body = await res.json();
@@ -29,20 +21,20 @@ test.describe("Inkwell API smoke", () => {
     );
   });
 
-  test("tags endpoint responds", async ({ request }) => {
-    const res = await request.get(`${env.apiURL}/tags`);
+  test("tags endpoint responds", async ({ api }) => {
+    const res = await api.get("tags");
     expect(res.ok()).toBeTruthy();
     expect(await res.json()).toHaveProperty("tags");
   });
 
-  test("seeded user can log in and gets a token", async ({ request }) => {
-    const res = await request.post(`${env.apiURL}/users/login`, {
-      data: { user: { email: "playwright@test.io", password: "Password123!" } },
+  test("seeded user can log in and gets a token", async ({ api, testUser }) => {
+    const res = await api.post("users/login", {
+      data: { user: { email: testUser.email, password: testUser.password } },
     });
     expect(res.ok()).toBeTruthy();
 
     const { user } = await res.json();
-    expect(user.username).toBe("playwright");
+    expect(user.username).toBe(testUser.username);
     expect(user.token).toBeTruthy();
   });
 });

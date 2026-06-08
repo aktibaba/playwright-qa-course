@@ -38,6 +38,12 @@ export default defineConfig({
             { text: "6. Debugging & DX", link: "/chapters/06-debugging" },
           ],
         },
+        {
+          text: "Part 2 — Fixtures & Architecture",
+          items: [
+            { text: "7. Custom fixtures", link: "/chapters/07-custom-fixtures" },
+          ],
+        },
       ],
     },
 

@@ -1,17 +1,16 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "@fixtures";
 import { LoginPage } from "@pages/LoginPage";
 import { ArticleEditorPage } from "@pages/ArticleEditorPage";
 import { ArticlePage } from "@pages/ArticlePage";
 
 // Chapter 5 — forms & dialogs. A full author flow: log in, publish an article via
 // the editor form, see it render, then delete it through a native confirm dialog.
+// Credentials come from the `testUser` fixture (Chapter 7).
 //
 // No DB reset (the `ui` project depends on `api`, so seed users already exist).
 // The article title carries a unique suffix so this test never collides with a
 // leftover from a previous run, and it deletes what it creates.
-const SEED_USER = { email: "playwright@test.io", password: "Password123!" };
-
-test("author can publish an article and delete it", async ({ page }) => {
+test("author can publish an article and delete it", async ({ page, testUser }) => {
   const title = `Testing Forms in Inkwell ${Date.now()}`;
   const draft = {
     title,
@@ -20,7 +19,7 @@ test("author can publish an article and delete it", async ({ page }) => {
     tags: "playwright testing",
   };
 
-  await new LoginPage(page).loginAs(SEED_USER);
+  await new LoginPage(page).loginAs(testUser);
 
   // Publish via the editor form.
   await new ArticleEditorPage(page).publishArticle(draft);

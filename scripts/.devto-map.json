@@ -22,5 +22,9 @@
   "06-debugging": {
     "id": 3849598,
     "slug": "debugging-developer-experience-playwright-typescript-ch6-1g4o-temp-slug-1041670"
+  },
+  "07-custom-fixtures": {
+    "id": 3849648,
+    "slug": "custom-fixtures-beyond-beforeeach-playwright-typescript-ch7-37l2-temp-slug-6918970"
   }
 }
