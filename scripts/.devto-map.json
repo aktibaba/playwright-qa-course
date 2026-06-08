@@ -78,5 +78,9 @@
   "20-reporters-and-observability": {
     "id": 3850576,
     "slug": "reporters-observability-playwright-typescript-ch20-4fko-temp-slug-7420997"
+  },
+  "21-ci-github-actions": {
+    "id": 3850709,
+    "slug": "cicd-with-github-actions-sharding-playwright-typescript-ch21-5hi2-temp-slug-9886790"
   }
 }

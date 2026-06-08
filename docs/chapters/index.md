@@ -40,5 +40,6 @@ carries a matching git tag in the companion repo.
 - [18. Multi-environment configuration](/chapters/18-multi-env-config)
 - [19. Parallelism & flake control](/chapters/19-parallelism-and-flake)
 - [20. Reporters & observability](/chapters/20-reporters-and-observability)
+- [21. CI/CD with GitHub Actions & sharding](/chapters/21-ci-github-actions)
 
 _More chapters land here as each milestone's code does._

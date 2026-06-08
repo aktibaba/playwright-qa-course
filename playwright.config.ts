@@ -53,8 +53,9 @@ export default defineConfig({
     {
       name: "ui",
       testDir: "./src/tests/ui",
-      // After `api` (so DB reads don't race) and `setup` (so the auth storage
-      // state exists for the tests that reuse it).
+      // After `api` (keeps peak concurrency on the single SUT down — the demo app
+      // has count races under heavy parallel load) and `setup` (the saved storage
+      // state). Note: dependency projects re-run per shard.
       dependencies: ["api", "setup"],
       use: { baseURL: env.webURL, ...devices["Desktop Chrome"] },
     },
