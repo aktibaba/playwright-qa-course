@@ -38,5 +38,9 @@ export class LoginPage {
   async loginAs(credentials: Credentials): Promise<void> {
     await this.goto();
     await this.submitCredentials(credentials);
+    // A successful login navigates away from /#/login. Wait for the form to
+    // unmount so callers can navigate next without racing the post-login
+    // redirect (which would otherwise bounce them back to the home page).
+    await expect(this.submit).toBeHidden();
   }
 }

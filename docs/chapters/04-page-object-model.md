@@ -77,21 +77,12 @@ Notice the design choices:
 
 ```ts
 // src/tests/ui/login.spec.ts
-import { test, expect, request as apiRequest } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { LoginPage } from "@pages/LoginPage";
-import { env } from "@utils/env";
 
 const SEED_USER = { email: "playwright@test.io", password: "Password123!" };
 
-test.describe.configure({ mode: "serial" });
-
 test.describe("Login (Page Object)", () => {
-  test.beforeAll(async () => {
-    const ctx = await apiRequest.newContext();
-    await ctx.post(`${env.apiURL}/test/reset`); // ensure the seed user exists
-    await ctx.dispose();
-  });
-
   test("a seeded user can log in", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
@@ -118,20 +109,21 @@ what the test is verifying.
 
 ## A real wrinkle: test data and a cross-project race
 
-This test logs a **real seeded user** in, so it needs the known seed data present —
-hence the `reset` in `beforeAll`. But our `api` project *also* resets the database,
-and if an API reset fires while this UI test is mid-login, login fails
-intermittently. (I hit exactly this: ~7 of 10 runs failed.)
+This test logs a **real seeded user** in, so the seed data has to be present. My
+first instinct was to `reset` the database in a `beforeAll`. That made it **worse**:
+the `api` project *also* resets the database, and when an API reset fired while this
+UI test was mid-login, login failed — about **7 of 10 runs**.
 
-The honest stopgap for now is to make the `ui` project run **after** the `api`
-project, so their database access never overlaps:
+The honest stopgap is to stop the two from overlapping: make the `ui` project run
+**after** the `api` project, and let the API be the one that seeds. UI tests then
+just *use* the seed data — no resetting of their own:
 
 ```ts
 // playwright.config.ts (ui project)
 {
   name: "ui",
   testDir: "./src/tests/ui",
-  dependencies: ["api"],   // api finishes before any UI test starts
+  dependencies: ["api"],   // api finishes (and seeds) before any UI test starts
   use: { baseURL: env.webURL, ...devices["Desktop Chrome"] },
 }
 ```
@@ -148,7 +140,8 @@ in so you can see the problem the isolation layer is designed to solve.
 - **Reuse.** Every future test that needs a logged-in user calls one method.
 
 But we still wrote `new LoginPage(page)` by hand, and the test still hard-codes
-`SEED_USER` and resets the DB itself. Those are the next dominoes.
+`SEED_USER` and leans on a whole-project dependency for its data. Those are the
+next dominoes — fixtures and per-test data isolation.
 
 ## Next up
 

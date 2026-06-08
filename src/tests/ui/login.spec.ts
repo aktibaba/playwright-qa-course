@@ -1,23 +1,16 @@
-import { test, expect, request as apiRequest } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { LoginPage } from "@pages/LoginPage";
-import { env } from "@utils/env";
 
 // Chapter 4 — Page Object Model. The test reads as behavior; all the "how"
 // (selectors, fill, click) lives in LoginPage.
 //
-// Serial + one reset up front: this test logs a seeded user in, so it needs the
-// known seed data present. Real per-test isolation comes later (Part 4).
+// No DB reset here: the `ui` project depends on the `api` project (see
+// playwright.config.ts), so the database is already seeded by the time UI tests
+// run — and the API's resets can never race a UI read. Real per-test data
+// isolation comes later (Part 4).
 const SEED_USER = { email: "playwright@test.io", password: "Password123!" };
 
-test.describe.configure({ mode: "serial" });
-
 test.describe("Login (Page Object)", () => {
-  test.beforeAll(async () => {
-    const ctx = await apiRequest.newContext();
-    await ctx.post(`${env.apiURL}/test/reset`);
-    await ctx.dispose();
-  });
-
   test("a seeded user can log in", async ({ page }) => {
     const loginPage = new LoginPage(page);
 
