@@ -42,5 +42,9 @@
   "11-apirequestcontext": {
     "id": 3850235,
     "slug": "apirequestcontext-fundamentals-playwright-typescript-ch11-2gg9-temp-slug-920156"
+  },
+  "12-api-auth": {
+    "id": 3850261,
+    "slug": "auth-sessions-for-the-api-layer-playwright-typescript-ch12-1k4-temp-slug-1674393"
   }
 }

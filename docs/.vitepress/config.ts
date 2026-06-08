@@ -51,6 +51,7 @@ export default defineConfig({
           text: "Part 3 — API Testing",
           items: [
             { text: "11. APIRequestContext", link: "/chapters/11-apirequestcontext" },
+            { text: "12. API auth & sessions", link: "/chapters/12-api-auth" },
           ],
         },
       ],
