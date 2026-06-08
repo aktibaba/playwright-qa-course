@@ -4,6 +4,8 @@ import { defineConfig } from "vitepress";
 // single source of truth; `npm run blog:devto` converts and pushes the same
 // content to dev.to as drafts.
 export default defineConfig({
+  // Served from https://aktibaba.github.io/playwright-qa-course/
+  base: "/playwright-qa-course/",
   title: "Playwright + TypeScript QA Course",
   description:
     "Build a production-grade Playwright + TypeScript automation framework — API and UI — against a real dockerized app.",

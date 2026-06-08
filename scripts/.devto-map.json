@@ -98,5 +98,9 @@
   "25-reporting": {
     "id": 3851923,
     "slug": "reporting-custom-reporters-result-visibility-playwright-typescript-ch25-2e8m-temp-slug-1393267"
+  },
+  "26-capstone": {
+    "id": 3852003,
+    "slug": "capstone-a-100-test-suite-end-to-end-playwright-typescript-ch26-5b9n"
   }
 }
