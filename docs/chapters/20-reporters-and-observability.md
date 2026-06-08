@@ -99,10 +99,11 @@ test("limit caps the page and the filtered count is exact", async ({ makeArticle
 });
 ```
 
-> A finding while writing these: Inkwell's **`offset` is broken** —
-> `?tag=X&limit=2&offset=2` over 3 matches returns **0** items instead of 1. We
-> avoid relying on offset and flag it as a bug to report — exactly the sort of thing
-> good coverage (and a readable report) surfaces.
+> A finding while writing these: Inkwell's **`offset` was broken** —
+> `?tag=X&limit=2&offset=2` over 3 matches returned **0** items instead of 1,
+> because the API multiplied `offset * limit` (treating offset as a page index),
+> violating the RealWorld contract. Exactly the sort of thing good coverage
+> surfaces — we fix it in the SUT in Chapter 21 and the offset test goes green.
 
 ## Next up
 

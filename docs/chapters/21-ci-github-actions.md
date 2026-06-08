@@ -59,9 +59,8 @@ Each shard is its **own job** with its **own** dockerized SUT — complete isola
 no cross-shard database contention.
 
 > One nuance worth knowing: **project dependencies run in every shard that needs
-> them.** Our `ui` project depends on `api` + `setup`, so those run once per shard.
-> If your dependency project is huge, factor that into how you split — sometimes a
-> dedicated setup project (not a full test project) is the better dependency.
+> them.** Our `ui` project depends on `setup` (the auth storage state), so that runs
+> once per shard — keep dependency projects small for exactly this reason.
 
 ## Merge the shards into one report
 
@@ -88,19 +87,33 @@ report:
 Download that artifact from the run and you get the unified report — with traces on
 any failure (Chapter 6) — exactly as if it ran on one machine.
 
-## More coverage — and a load-related finding
+## More coverage — and real bugs in the SUT
 
 This chapter also adds **comments**, **favorites**, and **follows** suites, each
 using fresh per-test data (a brand-new article, or a newly-registered user for
 follow) so counts are deterministic.
 
-Wiring those in surfaced something real. With more parallel tests pounding the
-**single** local SUT, `favoritesCount` and follower-count assertions started failing
-intermittently — the demo app has a race computing those counts under heavy
-concurrent writes. The fix wasn't in the tests: we keep the `ui → api` project
-dependency so the two phases don't hammer the database at peak concurrency together.
-In CI it's moot (each shard has its own SUT), but it's a good reminder that **your
-test infrastructure's limits are part of the system too.**
+Cranking up the parallelism did what good tests do: it **found real bugs in the
+application.** Under heavy concurrent load, requests started failing — and a trace
+plus the server logs pinned down four genuine defects in the SUT:
+
+1. **A null-author race.** `createArticle` set the author with an *un-awaited*
+   `setAuthor()`, leaving a brief window where the new row had no author. A
+   concurrent `GET /articles` hitting that row crashed with
+   `toAppend.hasFollower is not a function`. Fix: set the author atomically in
+   `Article.create`.
+2. **Duplicate slugs.** `slug` wasn't unique, and the controller used a racy
+   "find-then-create" check, so two concurrent same-title creates produced two
+   articles with the same slug — which then made favorites collide on a duplicate
+   primary key. Fix: a `unique` constraint on `slug` and an atomic create.
+3. **A crash on missing `tagList`** and **4. broken `offset` pagination** (it
+   multiplied `offset * limit`, violating the RealWorld contract).
+
+Rather than mask these with retries, **we fixed the app** (it's vendored in `sut/`).
+The lesson is the real point of the chapter: *a suite run at scale is a load test,
+and load tests find concurrency bugs.* With the SUT corrected, the suite is fully
+deterministic — UI and API specs run concurrently with no special ordering, so the
+`ui` project now depends only on `setup`.
 
 ## Next up — Part 6: Advanced & Capstone
 
