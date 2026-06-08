@@ -38,5 +38,9 @@
   "10-scopes-and-layers": {
     "id": 3850129,
     "slug": "worker-vs-test-scope-the-layer-rules-playwright-typescript-ch10-173e-temp-slug-3377284"
+  },
+  "11-apirequestcontext": {
+    "id": 3850235,
+    "slug": "apirequestcontext-fundamentals-playwright-typescript-ch11-2gg9-temp-slug-920156"
   }
 }

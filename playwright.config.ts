@@ -7,6 +7,9 @@ import { env } from "./src/utils/env";
 // storageState auth, and sharding.
 export default defineConfig({
   testDir: "./src/tests",
+  // Seed the database once, before everything. No test resets it itself, so read
+  // tests never race a mid-run wipe.
+  globalSetup: "./src/setup/global-setup.ts",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

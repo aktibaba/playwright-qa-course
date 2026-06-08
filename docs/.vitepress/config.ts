@@ -47,6 +47,12 @@ export default defineConfig({
             { text: "10. Scopes & layer rules", link: "/chapters/10-scopes-and-layers" },
           ],
         },
+        {
+          text: "Part 3 — API Testing",
+          items: [
+            { text: "11. APIRequestContext", link: "/chapters/11-apirequestcontext" },
+          ],
+        },
       ],
     },
 

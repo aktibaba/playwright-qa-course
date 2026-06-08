@@ -22,4 +22,8 @@ carries a matching git tag in the companion repo.
 - [9. Fixture composition & a single import](/chapters/09-composition-and-imports)
 - [10. Worker vs test scope & layer rules](/chapters/10-scopes-and-layers)
 
+## Part 3 — API Testing
+
+- [11. APIRequestContext fundamentals](/chapters/11-apirequestcontext)
+
 _More chapters land here as each milestone's code does._

@@ -1,26 +1,8 @@
 import { test, expect } from "@fixtures";
 
-// API smoke — now using the `api` fixture (an APIRequestContext pre-pointed at the
-// Inkwell API). No more `${env.apiURL}` prefixes, no leading-slash trap: paths are
-// plain relatives like "test/reset".
-//
-// Serial: every test shares one database and /test/reset drops every table, so the
-// first test reseeds and the rest run in order. (Per-test isolation: Part 4.)
-test.describe.configure({ mode: "serial" });
-
-test.describe("Inkwell API smoke", () => {
-  test("reset returns known seed data", async ({ api }) => {
-    const res = await api.post("test/reset");
-    expect(res.ok()).toBeTruthy();
-
-    const body = await res.json();
-    expect(body.status).toBe("reset");
-    expect(body.article).toBe("welcome-to-inkwell");
-    expect(body.users.map((u: { username: string }) => u.username)).toContain(
-      "playwright",
-    );
-  });
-
+// API health — the database is seeded once by global-setup, so these are pure
+// reads with no reset and no serial ordering needed.
+test.describe("API health", () => {
   test("tags endpoint responds", async ({ api }) => {
     const res = await api.get("tags");
     expect(res.ok()).toBeTruthy();
