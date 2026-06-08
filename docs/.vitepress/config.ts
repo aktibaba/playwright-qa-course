@@ -26,6 +26,7 @@ export default defineConfig({
           text: "Part 0 — Foundations",
           items: [
             { text: "1. Why a framework", link: "/chapters/01-why-a-framework" },
+            { text: "2. Setup & first tests", link: "/chapters/02-setup-and-first-tests" },
           ],
         },
       ],
