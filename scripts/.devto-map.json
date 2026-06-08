@@ -26,5 +26,9 @@
   "07-custom-fixtures": {
     "id": 3849648,
     "slug": "custom-fixtures-beyond-beforeeach-playwright-typescript-ch7-37l2-temp-slug-6918970"
+  },
+  "08-pom-as-fixture": {
+    "id": 3849697,
+    "slug": "pom-as-fixture-and-the-beforeall-trap-playwright-typescript-ch8-1gcp-temp-slug-9744669"
   }
 }

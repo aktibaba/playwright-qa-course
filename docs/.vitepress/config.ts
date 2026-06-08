@@ -42,6 +42,7 @@ export default defineConfig({
           text: "Part 2 — Fixtures & Architecture",
           items: [
             { text: "7. Custom fixtures", link: "/chapters/07-custom-fixtures" },
+            { text: "8. POM-as-fixture", link: "/chapters/08-pom-as-fixture" },
           ],
         },
       ],

@@ -1,16 +1,19 @@
 import { test, expect } from "@fixtures";
-import { LoginPage } from "@pages/LoginPage";
-import { ArticleEditorPage } from "@pages/ArticleEditorPage";
-import { ArticlePage } from "@pages/ArticlePage";
 
-// Chapter 5 — forms & dialogs. A full author flow: log in, publish an article via
-// the editor form, see it render, then delete it through a native confirm dialog.
-// Credentials come from the `testUser` fixture (Chapter 7).
+// Chapter 8 — the same author flow, but every Page Object (LoginPage,
+// ArticleEditorPage, ArticlePage) arrives as a fixture. The test asks for what it
+// needs and gets it, ready to use.
 //
 // No DB reset (the `ui` project depends on `api`, so seed users already exist).
 // The article title carries a unique suffix so this test never collides with a
 // leftover from a previous run, and it deletes what it creates.
-test("author can publish an article and delete it", async ({ page, testUser }) => {
+test("author can publish an article and delete it", async ({
+  page,
+  loginPage,
+  articleEditorPage,
+  articlePage,
+  testUser,
+}) => {
   const title = `Testing Forms in Inkwell ${Date.now()}`;
   const draft = {
     title,
@@ -19,13 +22,12 @@ test("author can publish an article and delete it", async ({ page, testUser }) =
     tags: "playwright testing",
   };
 
-  await new LoginPage(page).loginAs(testUser);
+  await loginPage.loginAs(testUser);
 
   // Publish via the editor form.
-  await new ArticleEditorPage(page).publishArticle(draft);
+  await articleEditorPage.publishArticle(draft);
 
   // We land on the new article's page.
-  const articlePage = new ArticlePage(page);
   await articlePage.expectTitle(title);
   await expect(page).toHaveURL(/#\/article\/testing-forms-in-inkwell-\d+/);
 
