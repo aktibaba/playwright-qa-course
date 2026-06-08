@@ -58,5 +58,9 @@
   "15-storage-state-auth": {
     "id": 3850369,
     "slug": "auth-once-with-storagestate-playwright-typescript-ch15-2f96-temp-slug-9991939"
+  },
+  "16-seed-via-api": {
+    "id": 3850423,
+    "slug": "seed-via-api-verify-in-ui-playwright-typescript-ch16-3p6m-temp-slug-313105"
   }
 }

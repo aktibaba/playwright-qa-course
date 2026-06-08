@@ -60,6 +60,7 @@ export default defineConfig({
           text: "Part 4 — Integrating API + UI",
           items: [
             { text: "15. Auth with storageState", link: "/chapters/15-storage-state-auth" },
+            { text: "16. Seed via API, verify in UI", link: "/chapters/16-seed-via-api" },
           ],
         },
       ],

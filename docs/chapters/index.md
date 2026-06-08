@@ -32,5 +32,6 @@ carries a matching git tag in the companion repo.
 ## Part 4 — Integrating API + UI
 
 - [15. Auth once with storageState](/chapters/15-storage-state-auth)
+- [16. Seed via API, verify in UI](/chapters/16-seed-via-api)
 
 _More chapters land here as each milestone's code does._
