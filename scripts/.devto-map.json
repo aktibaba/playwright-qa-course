@@ -50,5 +50,9 @@
   "13-crud-suites": {
     "id": 3850305,
     "slug": "building-crud-api-suites-playwright-typescript-ch13-1930-temp-slug-4129916"
+  },
+  "14-scenario-helpers": {
+    "id": 3850343,
+    "slug": "scenario-helpers-reusable-provisioning-playwright-typescript-ch14-1dkm-temp-slug-9775988"
   }
 }

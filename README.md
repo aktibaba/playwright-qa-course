@@ -87,6 +87,7 @@ Each chapter pairs prose with code at a git tag. Browse the code at any tag with
 | `ch-11` | `APIRequestContext` fundamentals | [source](docs/chapters/11-apirequestcontext.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-11) |
 | `ch-12` | Auth & sessions for the API | [source](docs/chapters/12-api-auth.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-12) |
 | `ch-13` | Building CRUD API suites | [source](docs/chapters/13-crud-suites.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-13) |
+| `ch-14` | Scenario helpers: reusable provisioning | [source](docs/chapters/14-scenario-helpers.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-14) |
 
 > Parts 3–6 (API testing, API+UI integration, scaling & CI, advanced & capstone)
 > are on the way — see [`docs/planning/`](docs/planning/) for the full 25-chapter

@@ -27,5 +27,6 @@ carries a matching git tag in the companion repo.
 - [11. APIRequestContext fundamentals](/chapters/11-apirequestcontext)
 - [12. Auth & sessions for the API](/chapters/12-api-auth)
 - [13. Building CRUD API suites](/chapters/13-crud-suites)
+- [14. Scenario helpers: reusable provisioning](/chapters/14-scenario-helpers)
 
 _More chapters land here as each milestone's code does._
