@@ -33,4 +33,19 @@ test.describe("Articles pagination", () => {
       body.articles.every((a: { tagList: string[] }) => a.tagList.includes(tag)),
     ).toBe(true);
   });
+
+  test("offset pages through results without overlap", async ({ makeArticle, api }) => {
+    const tag = `pg3-${Date.now()}`;
+    for (let i = 0; i < 3; i++) await makeArticle({ tagList: [tag] });
+
+    const page1 = await (await api.get("articles", { params: { tag, limit: 2, offset: 0 } })).json();
+    const page2 = await (await api.get("articles", { params: { tag, limit: 2, offset: 2 } })).json();
+
+    expect(page1.articles.length).toBe(2);
+    expect(page2.articles.length).toBe(1); // offset now skips items per the spec
+
+    const slugs1 = page1.articles.map((a: { slug: string }) => a.slug);
+    const slugs2 = page2.articles.map((a: { slug: string }) => a.slug);
+    expect(slugs1.some((s: string) => slugs2.includes(s))).toBe(false);
+  });
 });

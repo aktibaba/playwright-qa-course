@@ -40,7 +40,7 @@ const allArticles = async (req, res, next) => {
         },
       ],
       limit: parseInt(limit),
-      offset: offset * limit,
+      offset: parseInt(offset),
       order: [["createdAt", "DESC"]],
     };
 
@@ -82,17 +82,30 @@ const createArticle = async (req, res, next) => {
     if (!body) throw new FieldRequiredError("An article body");
 
     const slug = slugify(title);
-    const slugInDB = await Article.findOne({ where: { slug: slug } });
-    if (slugInDB) throw new AlreadyTakenError("Title");
 
-    const article = await Article.create({
-      slug: slug,
-      title: title,
-      description: description,
-      body: body,
-    });
+    // Create atomically and let the unique slug constraint be the source of truth.
+    // The old "findOne then create" check had a race window where two concurrent
+    // requests both passed the check and inserted duplicate slugs.
+    // Also set the author here (userId) — it used to be a separate, un-awaited
+    // setAuthor() call, leaving a window where the row had no author and concurrent
+    // reads crashed in appendFollowers.
+    let article;
+    try {
+      article = await Article.create({
+        slug: slug,
+        title: title,
+        description: description,
+        body: body,
+        userId: loggedUser.id,
+      });
+    } catch (error) {
+      if (error.name === "SequelizeUniqueConstraintError") {
+        throw new AlreadyTakenError("Title");
+      }
+      throw error;
+    }
 
-    for (const tag of tagList) {
+    for (const tag of tagList || []) {
       const tagInDB = await Tag.findByPk(tag.trim());
 
       if (tagInDB) {
@@ -106,8 +119,7 @@ const createArticle = async (req, res, next) => {
 
     delete loggedUser.dataValues.token;
 
-    article.dataValues.tagList = tagList;
-    article.setAuthor(loggedUser);
+    article.dataValues.tagList = tagList || [];
     article.dataValues.author = loggedUser;
     await appendFollowers(loggedUser, loggedUser);
     await appendFavorites(loggedUser, article);
@@ -130,7 +142,7 @@ const articlesFeed = async (req, res, next) => {
     const articles = await Article.findAndCountAll({
       include: includeOptions,
       limit: parseInt(limit),
-      offset: offset * limit,
+      offset: parseInt(offset),
       order: [["createdAt", "DESC"]],
       where: { userId: authors.map((author) => author.id) },
     });

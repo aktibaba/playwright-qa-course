@@ -43,7 +43,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   Article.init(
     {
-      slug: DataTypes.STRING,
+      // slug is the article's public identifier — it must be unique. Without this
+      // constraint, concurrent creates of the same title produced duplicate slugs,
+      // making slug lookups ambiguous.
+      slug: { type: DataTypes.STRING, unique: true },
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
       body: DataTypes.TEXT,

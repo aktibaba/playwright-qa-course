@@ -53,10 +53,10 @@ export default defineConfig({
     {
       name: "ui",
       testDir: "./src/tests/ui",
-      // After `api` (keeps peak concurrency on the single SUT down — the demo app
-      // has count races under heavy parallel load) and `setup` (the saved storage
-      // state). Note: dependency projects re-run per shard.
-      dependencies: ["api", "setup"],
+      // Depends only on `setup` (the saved storage state). With the SUT's
+      // concurrency bugs fixed, UI and API specs run (and shard) concurrently
+      // without contention. Every test uses unique data + cleanup.
+      dependencies: ["setup"],
       use: { baseURL: env.webURL, ...devices["Desktop Chrome"] },
     },
   ],
