@@ -62,5 +62,9 @@
   "16-seed-via-api": {
     "id": 3850423,
     "slug": "seed-via-api-verify-in-ui-playwright-typescript-ch16-3p6m-temp-slug-313105"
+  },
+  "17-test-data-and-env": {
+    "id": 3850449,
+    "slug": "test-data-factories-environment-config-playwright-typescript-ch17-58n8-temp-slug-5546912"
   }
 }

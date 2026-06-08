@@ -7,7 +7,7 @@ export interface ScenarioFixtures {
    * made through it is deleted automatically when the test ends — no manual
    * cleanup in the test.
    */
-  makeArticle: (overrides?: ArticleInput) => Promise<Article>;
+  makeArticle: (overrides?: Partial<ArticleInput>) => Promise<Article>;
 }
 
 // Chains on authTest (it needs `authedApi`). Tracks everything it provisions and
@@ -16,7 +16,7 @@ export const test = authTest.extend<ScenarioFixtures>({
   makeArticle: async ({ authedApi }, use) => {
     const created: string[] = [];
 
-    const make = async (overrides: ArticleInput = {}): Promise<Article> => {
+    const make = async (overrides: Partial<ArticleInput> = {}): Promise<Article> => {
       const article = await createArticle(authedApi, overrides);
       created.push(article.slug);
       return article;
