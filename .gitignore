@@ -13,3 +13,6 @@ docs/.vitepress/cache/
 
 *.log
 .DS_Store
+
+# Saved auth sessions
+.auth/

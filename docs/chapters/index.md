@@ -29,4 +29,8 @@ carries a matching git tag in the companion repo.
 - [13. Building CRUD API suites](/chapters/13-crud-suites)
 - [14. Scenario helpers: reusable provisioning](/chapters/14-scenario-helpers)
 
+## Part 4 — Integrating API + UI
+
+- [15. Auth once with storageState](/chapters/15-storage-state-auth)
+
 _More chapters land here as each milestone's code does._

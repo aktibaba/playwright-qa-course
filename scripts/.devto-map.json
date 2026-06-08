@@ -54,5 +54,9 @@
   "14-scenario-helpers": {
     "id": 3850343,
     "slug": "scenario-helpers-reusable-provisioning-playwright-typescript-ch14-1dkm-temp-slug-9775988"
+  },
+  "15-storage-state-auth": {
+    "id": 3850369,
+    "slug": "auth-once-with-storagestate-playwright-typescript-ch15-2f96-temp-slug-9991939"
   }
 }

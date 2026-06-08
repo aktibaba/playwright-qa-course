@@ -56,6 +56,12 @@ export default defineConfig({
             { text: "14. Scenario helpers", link: "/chapters/14-scenario-helpers" },
           ],
         },
+        {
+          text: "Part 4 — Integrating API + UI",
+          items: [
+            { text: "15. Auth with storageState", link: "/chapters/15-storage-state-auth" },
+          ],
+        },
       ],
     },
 

@@ -30,12 +30,18 @@ export default defineConfig({
       use: { baseURL: env.apiURL },
     },
     {
+      // Logs in once and saves a storage state to disk (.auth/playwright.json).
+      name: "setup",
+      testDir: "./src/setup",
+      testMatch: /auth\.setup\.ts/,
+      use: { baseURL: env.webURL },
+    },
+    {
       name: "ui",
       testDir: "./src/tests/ui",
-      // Run AFTER the api project so the API's database resets never race a UI
-      // read mid-test (e.g. logging a seeded user in). This is a stopgap — real
-      // per-test data isolation arrives later in the course.
-      dependencies: ["api"],
+      // After `api` (so DB reads don't race) and `setup` (so the auth storage
+      // state exists for the tests that reuse it).
+      dependencies: ["api", "setup"],
       use: { baseURL: env.webURL, ...devices["Desktop Chrome"] },
     },
   ],

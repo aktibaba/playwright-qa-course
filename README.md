@@ -89,6 +89,12 @@ Each chapter pairs prose with code at a git tag. Browse the code at any tag with
 | `ch-13` | Building CRUD API suites | [source](docs/chapters/13-crud-suites.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-13) |
 | `ch-14` | Scenario helpers: reusable provisioning | [source](docs/chapters/14-scenario-helpers.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-14) |
 
+### Part 4 — Integrating API + UI
+
+| Tag | Chapter | Read | Code |
+|-----|---------|------|------|
+| `ch-15` | Auth once with `storageState` | [source](docs/chapters/15-storage-state-auth.md) | [tree](https://github.com/aktibaba/playwright-qa-course/tree/ch-15) |
+
 > Parts 3–6 (API testing, API+UI integration, scaling & CI, advanced & capstone)
 > are on the way — see [`docs/planning/`](docs/planning/) for the full 25-chapter
 > roadmap.
