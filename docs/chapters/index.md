@@ -13,5 +13,6 @@ carries a matching git tag in the companion repo.
 - [3. Locators & web-first assertions](/chapters/03-locators-and-assertions)
 - [4. The Page Object Model](/chapters/04-page-object-model)
 - [5. Forms & native dialogs](/chapters/05-forms-and-dialogs)
+- [6. Debugging & developer experience](/chapters/06-debugging)
 
 _More chapters land here as each milestone's code does._

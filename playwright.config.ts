@@ -11,7 +11,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? [["html", { open: "never" }]] : "list",
+  // Console "list" output plus an HTML report (with traces/screenshots) on every
+  // run — open it with `npm run test:report`. See Chapter 6 on debugging.
+  reporter: [["list"], ["html", { open: "never" }]],
 
   use: {
     trace: "on-first-retry",

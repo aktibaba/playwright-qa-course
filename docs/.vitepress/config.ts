@@ -35,6 +35,7 @@ export default defineConfig({
             { text: "3. Locators & assertions", link: "/chapters/03-locators-and-assertions" },
             { text: "4. Page Object Model", link: "/chapters/04-page-object-model" },
             { text: "5. Forms & dialogs", link: "/chapters/05-forms-and-dialogs" },
+            { text: "6. Debugging & DX", link: "/chapters/06-debugging" },
           ],
         },
       ],

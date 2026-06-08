@@ -5,6 +5,11 @@
   "type": "module",
   "description": "Playwright + TypeScript QA automation course — written chapters (VitePress) plus a companion framework tested against the Inkwell SUT.",
   "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "codegen": "playwright codegen http://localhost:3000",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
