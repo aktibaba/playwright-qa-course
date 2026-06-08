@@ -10,7 +10,11 @@ test.describe("Locators & web-first assertions", () => {
     // getByRole asserts the accessible role AND name — resilient to markup changes.
     await expect(page.getByRole("button", { name: "Global Feed" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Sign up" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "inkwell" })).toBeVisible();
+    // exact: true — a substring match would also catch the seeded article
+    // heading "Welcome to Inkwell", and strict mode would throw on two matches.
+    await expect(
+      page.getByRole("heading", { name: "inkwell", exact: true }),
+    ).toBeVisible();
   });
 
   test("strict mode forces you to disambiguate", async ({ page }) => {
@@ -18,8 +22,9 @@ test.describe("Locators & web-first assertions", () => {
 
     // The brand "inkwell" is a link in BOTH the navbar and the footer. A bare
     // getByRole here would throw a strict-mode error — so we assert the count
-    // and then narrow with .first().
-    const brand = page.getByRole("link", { name: "inkwell" });
+    // and then narrow with .first(). exact: true keeps the seeded article's
+    // "Welcome to Inkwell" link out of the match.
+    const brand = page.getByRole("link", { name: "inkwell", exact: true });
     await expect(brand).toHaveCount(2);
     await expect(brand.first()).toBeVisible();
   });

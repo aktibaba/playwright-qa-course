@@ -11,5 +11,6 @@ carries a matching git tag in the companion repo.
 ## Part 1 — UI Core
 
 - [3. Locators & web-first assertions](/chapters/03-locators-and-assertions)
+- [4. The Page Object Model](/chapters/04-page-object-model)
 
 _More chapters land here as each milestone's code does._

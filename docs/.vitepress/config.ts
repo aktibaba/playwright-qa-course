@@ -33,6 +33,7 @@ export default defineConfig({
           text: "Part 1 — UI Core",
           items: [
             { text: "3. Locators & assertions", link: "/chapters/03-locators-and-assertions" },
+            { text: "4. Page Object Model", link: "/chapters/04-page-object-model" },
           ],
         },
       ],

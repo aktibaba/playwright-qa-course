@@ -43,9 +43,14 @@ test("prefer role-based locators over CSS", async ({ page }) => {
 
   await expect(page.getByRole("button", { name: "Global Feed" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Sign up" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "inkwell" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "inkwell", exact: true }),
+  ).toBeVisible();
 });
 ```
+
+That `exact: true` is not cosmetic — see the next section for the bug that
+*forced* it.
 
 `getByRole("button", { name: "Global Feed" })` asserts two things at once — that an
 element with the *button* role exists and that its accessible name is "Global
@@ -65,11 +70,32 @@ a perfect example:
 test("strict mode forces you to disambiguate", async ({ page }) => {
   await page.goto("/");
 
-  const brand = page.getByRole("link", { name: "inkwell" });
+  const brand = page.getByRole("link", { name: "inkwell", exact: true });
   await expect(brand).toHaveCount(2);   // two matches — a bare click would throw
   await expect(brand.first()).toBeVisible();
 });
 ```
+
+### The bug that exact-matching caught
+
+By default, the `name` option does a **case-insensitive substring** match. That
+bites you the moment real data shows up. Inkwell's seeded home feed contains an
+article titled **"Welcome to Inkwell"** — so the loose locator
+`getByRole("heading", { name: "inkwell" })` matched **two** headings: the banner
+*and* the article title. The test passed when the feed was slow to load and failed
+when it wasn't — a textbook flaky test.
+
+```ts
+// ❌ substring: also matches the article heading "Welcome to Inkwell"
+page.getByRole("heading", { name: "inkwell" });
+
+// ✅ exact: matches only the banner <h1>inkwell</h1>
+page.getByRole("heading", { name: "inkwell", exact: true });
+```
+
+The same trap applies to the brand links above — `{ exact: true }` keeps the
+article's "Welcome to Inkwell" link out of the count. When a name is a common word,
+reach for `exact: true` (or a regex like `/^inkwell$/`).
 
 `.first()` is the quick escape hatch, but the *better* fix is usually to **scope**
 the search so it's unambiguous — locate within a region first:

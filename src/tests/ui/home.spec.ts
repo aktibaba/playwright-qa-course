@@ -7,9 +7,11 @@ test.describe("Inkwell home page", () => {
     await page.goto("/");
 
     await expect(page).toHaveTitle("Inkwell");
-    // The brand wordmark appears as the banner heading (the navbar/footer also
-    // carry "inkwell" links, so target the unique <h1>).
-    await expect(page.getByRole("heading", { name: "inkwell" })).toBeVisible();
+    // exact: true — otherwise this substring-matches the seeded article heading
+    // "Welcome to Inkwell" too, and strict mode throws on two matches.
+    await expect(
+      page.getByRole("heading", { name: "inkwell", exact: true }),
+    ).toBeVisible();
     await expect(page.getByRole("link", { name: "Sign up" })).toBeVisible();
   });
 
