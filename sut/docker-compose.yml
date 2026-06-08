@@ -1,0 +1,70 @@
+# Inkwell SUT — one-command stack for the Playwright course.
+#
+#   docker compose up -d --build --wait
+#
+# Brings up Postgres, the Express API, and the nginx-served React SPA, and only
+# returns once every healthcheck is green — so tests never race startup.
+name: inkwell-sut
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: inkwell
+      POSTGRES_PASSWORD: inkwell
+      POSTGRES_DB: inkwell
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U inkwell -d inkwell"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: ./backend
+    environment:
+      NODE_ENV: development
+      PORT: "3001"
+      JWT_KEY: course_test_secret
+      # Sequelize "development" config reads these (config/config.js).
+      DEV_DB_USERNAME: inkwell
+      DEV_DB_PASSWORD: inkwell
+      DEV_DB_NAME: inkwell
+      DEV_DB_HOSTNAME: db
+      DEV_DB_DIALECT: postgres
+      # Enable the test-only reset/seed routes (routes/test.js).
+      ENABLE_TEST_ENDPOINTS: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+    healthcheck:
+      # /api/tags is the cheapest endpoint that proves the DB connection + schema.
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "require('http').get('http://localhost:3001/api/tags',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  web:
+    build: ./frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pgdata:

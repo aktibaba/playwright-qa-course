@@ -1,0 +1,20 @@
+{
+  "name": "playwright-qa-course",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Playwright + TypeScript QA automation course — written chapters (VitePress) plus a companion framework tested against the Inkwell SUT.",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "blog:devto": "node --env-file=.env scripts/devto-sync.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.2",
+    "gray-matter": "^4.0.3",
+    "typescript": "^6.0.3",
+    "vitepress": "^1.6.3"
+  }
+}

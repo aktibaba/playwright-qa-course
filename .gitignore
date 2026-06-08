@@ -1,0 +1,15 @@
+node_modules/
+.env
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# VitePress
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+*.log
+.DS_Store

@@ -1,0 +1,22 @@
+{
+  "name": "inkwell",
+  "version": "1.0.0",
+  "description": "Inkwell — a React / Express.js / Sequelize / PostgreSQL blogging app used as the system under test (SUT) for the Playwright + TypeScript QA course.",
+  "private": true,
+  "license": "MIT",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently --names 'Node,Vite' -c 'green,blue' 'npm run dev -w backend' 'npm run dev -w frontend'",
+    "sqlz": "npx -w backend sequelize-cli",
+    "start": "npm run build -w frontend && npm run start -w backend",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react-swc": "^4.2.3",
+    "concurrently": "^9.2.1",
+    "vitest": "^4.0.18"
+  }
+}

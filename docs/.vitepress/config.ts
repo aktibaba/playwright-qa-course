@@ -1,0 +1,40 @@
+import { defineConfig } from "vitepress";
+
+// Our own Vite-powered copy of the course. Every chapter authored here is the
+// single source of truth; `npm run blog:devto` converts and pushes the same
+// content to dev.to as drafts.
+export default defineConfig({
+  title: "Playwright + TypeScript QA Course",
+  description:
+    "Build a production-grade Playwright + TypeScript automation framework — API and UI — against a real dockerized app.",
+  lang: "en-US",
+
+  // Internal planning docs live under docs/planning but are NOT part of the site.
+  srcExclude: ["planning/**", "**/README.md"],
+  cleanUrls: true,
+  lastUpdated: true,
+
+  themeConfig: {
+    nav: [
+      { text: "Home", link: "/" },
+      { text: "Chapters", link: "/chapters/" },
+    ],
+
+    sidebar: {
+      "/chapters/": [
+        {
+          text: "Part 0 — Foundations",
+          items: [
+            { text: "1. Why a framework", link: "/chapters/01-why-a-framework" },
+          ],
+        },
+      ],
+    },
+
+    socialLinks: [
+      { icon: "github", link: "https://github.com" },
+    ],
+
+    search: { provider: "local" },
+  },
+});
