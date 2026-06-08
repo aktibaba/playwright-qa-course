@@ -19,6 +19,7 @@ export class ArticleEditorPage {
   readonly body: Locator;
   readonly tags: Locator;
   readonly publish: Locator;
+  readonly update: Locator;
 
   constructor(private readonly page: Page) {
     this.title = page.getByPlaceholder("Article Title");
@@ -26,11 +27,24 @@ export class ArticleEditorPage {
     this.body = page.getByPlaceholder("Write your article (in markdown)");
     this.tags = page.getByPlaceholder("Enter tags");
     this.publish = page.getByRole("button", { name: "Publish Article" });
+    this.update = page.getByRole("button", { name: "Update Article" });
   }
 
   async goto(): Promise<void> {
     await this.page.goto("/#/editor");
     await expect(this.title).toBeVisible();
+  }
+
+  /** Open the editor for an existing article and wait for it to prefill. */
+  async gotoEdit(slug: string, currentTitle: string): Promise<void> {
+    await this.page.goto(`/#/editor/${slug}`);
+    await expect(this.title).toHaveValue(currentTitle);
+  }
+
+  /** Change the body of the article currently open in the editor, then save. */
+  async editBody(body: string): Promise<void> {
+    await this.body.fill(body);
+    await this.update.click();
   }
 
   /** Fill the whole form and publish. Navigates to the new article on success. */

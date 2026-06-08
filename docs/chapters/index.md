@@ -46,5 +46,6 @@ carries a matching git tag in the companion repo.
 
 - [22. Network mocking, visual & accessibility](/chapters/22-advanced-techniques)
 - [23. Stability & maintainability at scale](/chapters/23-stability-at-scale)
+- [24. Framework maturation & docs](/chapters/24-maturation-and-docs)
 
 _More chapters land here as each milestone's code does._

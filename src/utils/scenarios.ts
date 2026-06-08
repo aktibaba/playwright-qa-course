@@ -1,4 +1,5 @@
-import type { APIRequestContext } from "@playwright/test";
+import { request, type APIRequestContext } from "@playwright/test";
+import { env } from "@utils/env";
 import { articleData, type ArticleInput } from "@data/article";
 import { uniqueId } from "@utils/unique";
 
@@ -30,6 +31,26 @@ export async function createArticle(
     throw new Error(`createArticle failed: HTTP ${res.status()}`);
   }
   return (await res.json()).article as Article;
+}
+
+/**
+ * Provision an article authored by a SPECIFIC user (by their token), via a
+ * short-lived authenticated context. Useful when a test needs an article whose
+ * author is a fresh, isolated user (e.g. an uncluttered profile page).
+ */
+export async function createArticleAs(
+  token: string,
+  overrides: Partial<ArticleInput> = {},
+): Promise<Article> {
+  const ctx = await request.newContext({
+    baseURL: `${env.apiURL}/`,
+    extraHTTPHeaders: { Authorization: `Token ${token}` },
+  });
+  try {
+    return await createArticle(ctx, overrides);
+  } finally {
+    await ctx.dispose();
+  }
 }
 
 export interface RegisteredUser {
