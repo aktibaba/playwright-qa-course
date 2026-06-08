@@ -214,11 +214,12 @@ for (const file of targets) {
     map[key] = { id: result.id, slug: result.slug };
     saveMap(map);
     const editUrl = `https://dev.to/${result.url ? new URL(result.url).pathname.slice(1) : ""}`;
+    const state = article.published ? "published" : "draft";
     if (existingId) {
-      console.log(`✓ update ${key} → dev.to #${result.id} (draft)`);
+      console.log(`✓ update ${key} → dev.to #${result.id} (${state})`);
       updated++;
     } else {
-      console.log(`✓ create ${key} → dev.to #${result.id} (draft)`);
+      console.log(`✓ create ${key} → dev.to #${result.id} (${state})`);
       created++;
     }
     console.log(`         edit: https://dev.to/dashboard  •  ${result.url || editUrl}`);
@@ -229,4 +230,4 @@ for (const file of targets) {
 }
 
 console.log(`\nDone — ${created} created, ${updated} updated, ${skipped} skipped.`);
-console.log("All articles are drafts; review and publish them on dev.to.");
+console.log("Publish state follows each chapter's `published` frontmatter (default: draft).");
