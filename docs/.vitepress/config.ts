@@ -43,6 +43,7 @@ export default defineConfig({
           items: [
             { text: "7. Custom fixtures", link: "/chapters/07-custom-fixtures" },
             { text: "8. POM-as-fixture", link: "/chapters/08-pom-as-fixture" },
+            { text: "9. Composition & imports", link: "/chapters/09-composition-and-imports" },
           ],
         },
       ],
