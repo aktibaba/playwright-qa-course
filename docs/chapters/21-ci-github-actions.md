@@ -1,6 +1,6 @@
 ---
 title: "CI/CD with GitHub Actions & Sharding (Playwright + TypeScript, Ch.21)"
-description: "Run the suite on every push: stand up the dockerized SUT in a workflow, shard tests across machines, merge the blob reports into one HTML report, and publish it as an artifact."
+description: "Run the suite automatically on every push, explained from scratch: what CI and GitHub Actions are, stand up the dockerized app in a workflow, shard tests across machines, merge the reports — and the real app bugs the load surfaced."
 tags: [playwright, typescript, testing, webdev]
 series: "Playwright + TypeScript QA Course"
 devto: true
@@ -9,68 +9,74 @@ published: false
 
 # CI/CD with GitHub Actions & Sharding
 
-A suite that only runs on your laptop protects only your laptop. This chapter wires
-the whole thing into **GitHub Actions**: spin up the dockerized SUT, run the tests
-**sharded** across parallel machines, and merge the results into one report. We also
-broaden coverage — comments, favorites, follows — to give the shards something to
-chew on.
+A suite that only runs on your laptop protects only your laptop. We want it to run
+**automatically, on every change, for everyone** — that's the job of CI.
+
+> **CI/CD** = Continuous Integration / Continuous Delivery. The CI part: a service runs
+> your tests every time code is pushed, so problems are caught immediately.
+> **GitHub Actions** is GitHub's built-in CI. You describe what to do in a **workflow**
+> — a YAML file in `.github/workflows/`. A workflow has **jobs**, each running on a
+> fresh virtual machine called a **runner**, and each job is a list of **steps**.
+> (YAML is just an indentation-based config format.)
 
 > Code for this chapter is tagged `ch-21` in the repo:
 > **https://github.com/aktibaba/playwright-qa-course** — see
 > `.github/workflows/ci.yml` and the new `comments` / `favorites` / `follow` specs.
 
-## Stand up the SUT, then test it
+## Stand up the app, then test it
 
-The same one command we use locally brings Inkwell up in CI — healthchecks and all:
+The exact command we use locally brings Inkwell up on the CI runner — healthchecks and
+all:
 
 ```yaml
 - name: Start Inkwell (system under test)
   run: docker compose -f sut/docker-compose.yml up -d --build --wait
-- run: npm ci
-- run: npx playwright install --with-deps chromium
+- run: npm ci                                  # install deps from the lockfile
+- run: npx playwright install --with-deps chromium   # download the browser
 ```
 
-`--wait` is doing real work here: the job blocks until every service is healthy, so
-tests never race startup.
+`--wait` matters: the step blocks until every service is healthy, so the tests never
+start before the app is ready.
 
 ## Shard across machines
 
-Sharding splits the test list into N groups that run on N parallel runners — wall
-time drops roughly linearly. Use a matrix and the **blob** reporter (built to be
-merged):
+**Sharding** splits the test list into N groups that run on N machines *at the same
+time*, so the total wall-clock time drops roughly N×. We use a **matrix** (a way to run
+the same job several times with different values) and the **blob** reporter (made to be
+merged later):
 
 ```yaml
 strategy:
   fail-fast: false
   matrix:
-    shard: [1, 2]
+    shard: [1, 2]                              # run this job twice: shard 1 and shard 2
 steps:
   # ...
   - name: Run tests (sharded)
     run: npx playwright test --shard=${{ matrix.shard }}/2 --reporter=blob
-  - uses: actions/upload-artifact@v4
+  - uses: actions/upload-artifact@v4           # save this shard's results
     if: ${{ !cancelled() }}
     with:
       name: blob-report-${{ matrix.shard }}
       path: blob-report/
 ```
 
-Each shard is its **own job** with its **own** dockerized SUT — complete isolation,
-no cross-shard database contention.
+Each shard is its **own job** on its **own** runner with its **own** dockerized app —
+complete isolation, no two shards sharing a database.
 
-> One nuance worth knowing: **project dependencies run in every shard that needs
-> them.** Our `ui` project depends on `setup` (the auth storage state), so that runs
-> once per shard — keep dependency projects small for exactly this reason.
+> One nuance: **project dependencies run in every shard that needs them.** Our `ui`
+> project depends on `setup` (the saved auth session), so `setup` runs once per shard —
+> a good reason to keep dependency projects small.
 
 ## Merge the shards into one report
 
-A second job collects every shard's blob report and merges them into a single
-browsable HTML report:
+A second job downloads every shard's blob report and merges them into a single HTML
+report you can browse:
 
 ```yaml
 report:
   if: ${{ !cancelled() }}
-  needs: [test]
+  needs: [test]                                # wait for all the shard jobs
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v4
@@ -84,42 +90,39 @@ report:
       with: { name: playwright-html-report, path: playwright-report/ }
 ```
 
-Download that artifact from the run and you get the unified report — with traces on
-any failure (Chapter 6) — exactly as if it ran on one machine.
+Download that artifact from the run and you get one unified report — with traces on any
+failure — exactly as if it had all run on one machine.
 
-## More coverage — and real bugs in the SUT
+## More coverage — and real bugs in the app
 
-This chapter also adds **comments**, **favorites**, and **follows** suites, each
-using fresh per-test data (a brand-new article, or a newly-registered user for
-follow) so counts are deterministic.
+This chapter also adds **comments**, **favorites**, and **follows** test suites, each
+using fresh per-test data so counts are deterministic.
 
 Cranking up the parallelism did what good tests do: it **found real bugs in the
-application.** Under heavy concurrent load, requests started failing — and a trace
-plus the server logs pinned down four genuine defects in the SUT:
+application.** Under heavy concurrent load, requests started failing — and a trace plus
+the server logs pinned down four genuine defects in Inkwell:
 
 1. **A null-author race.** `createArticle` set the author with an *un-awaited*
-   `setAuthor()`, leaving a brief window where the new row had no author. A
-   concurrent `GET /articles` hitting that row crashed with
-   `toAppend.hasFollower is not a function`. Fix: set the author atomically in
-   `Article.create`.
-2. **Duplicate slugs.** `slug` wasn't unique, and the controller used a racy
-   "find-then-create" check, so two concurrent same-title creates produced two
-   articles with the same slug — which then made favorites collide on a duplicate
-   primary key. Fix: a `unique` constraint on `slug` and an atomic create.
-3. **A crash on missing `tagList`** and **4. broken `offset` pagination** (it
-   multiplied `offset * limit`, violating the RealWorld contract).
+   `setAuthor()`, leaving a brief moment where the new article had no author. A
+   concurrent `GET /articles` hitting that row crashed. Fix: set the author atomically
+   when creating the row.
+2. **Duplicate slugs.** `slug` wasn't unique and the code used a racy "check then
+   create", so two concurrent same-title creates made two articles with the same slug —
+   which then broke favoriting. Fix: a `unique` constraint on `slug` and an atomic
+   create.
+3. **A crash on a missing `tagList`**, and **4. broken `offset` pagination**
+   (it multiplied `offset * limit`).
 
-Rather than mask these with retries, **we fixed the app** (it's vendored in `sut/`).
-The lesson is the real point of the chapter: *a suite run at scale is a load test,
-and load tests find concurrency bugs.* With the SUT corrected, the suite is fully
-deterministic — UI and API specs run concurrently with no special ordering, so the
-`ui` project now depends only on `setup`.
+Rather than mask these with retries, **we fixed the app itself** (it's in `sut/`). And
+that's the real lesson: *running your suite at scale is a load test, and load tests find
+concurrency bugs.* With the app corrected, the suite is fully deterministic — UI and API
+specs run concurrently with no special ordering needed.
 
 ## Next up — Part 6: Advanced & Capstone
 
 The framework is real and runs in CI. **Chapter 22 — Advanced techniques:** network
 mocking to test the UI in isolation, visual snapshots, and accessibility scans — new
-kinds of assertions on top of everything we've built. Tag: `ch-22`.
+kinds of checks on top of everything we've built. Tag: `ch-22`.
 
 > Following along? Star the [repo](https://github.com/aktibaba/playwright-qa-course)
 > and tell me how many shards your CI runs.

@@ -1,6 +1,6 @@
 ---
 title: "Auth Once with storageState (Playwright + TypeScript, Ch.15)"
-description: "Part 4 opens — the API+UI superpower. Log in a single time, save the browser session to disk, and start every UI test already authenticated. We seed the session via the API and reuse it through a setup project."
+description: "The API+UI superpower, for beginners: what a browser session is, and how to log in ONCE, save it to a file, and start every UI test already authenticated — so you never log in through the form again."
 tags: [playwright, typescript, testing, webdev]
 series: "Playwright + TypeScript QA Course"
 devto: true
@@ -9,25 +9,38 @@ published: false
 
 # Auth Once with `storageState`
 
-Welcome to **Part 4 — Integration**, the part that separates a toy suite from a real
-one: making the API and UI layers work *together*. We start with the highest-leverage
-example — authentication.
+Welcome to **Part 4 — Integration**: making the API and UI layers work *together*.
+This is what separates a toy suite from a real one, and we start with the highest-value
+example — logging in.
 
-Logging in through the UI form on every test is slow (page load + type + submit +
-redirect) and repetitive. Playwright's answer is **`storageState`**: capture the
-browser session — cookies and `localStorage` — once, save it to disk, and load it
-into any test so it opens **already authenticated**.
+## The problem
+
+Logging in through the form on every UI test is **slow** (load the page, type the
+email, type the password, click, wait for the redirect) and repetitive. Do it on a
+hundred tests and you've wasted real minutes per run.
+
+## The idea: save the session
+
+When you log in, the browser stores proof that you're logged in — in **cookies** and
+in **`localStorage`** (a small key/value store the page keeps in the browser). Together
+these are your **session**.
+
+Playwright can **save that session to a file** and **load it back** into other tests.
+A test that loads it opens the app **already logged in** — no form needed. That saved
+file is called a **storage state**.
 
 > Code for this chapter is tagged `ch-15` in the repo:
 > **https://github.com/aktibaba/playwright-qa-course** — see `src/setup/auth.setup.ts`,
 > `playwright.config.ts`, and `src/tests/ui/authenticated.spec.ts`.
 
-## A setup project that authenticates once
+## A setup project that logs in once
 
-Playwright runs **setup** as a normal test file in its own project, which other
-projects depend on. Here's the integration twist: instead of driving the login form,
-we log in through the **API** (one fast request), then write the session into
-`localStorage` exactly how Inkwell expects it, and save the storage state:
+Playwright lets you run a **setup project** — a special test file that runs *before*
+your other tests and prepares things they need. Ours logs in and saves the session.
+
+Here's the integration twist: instead of driving the slow login *form*, we log in
+through the **API** (one fast request), then write the session into the browser's
+`localStorage` and save it:
 
 ```ts
 // src/setup/auth.setup.ts
@@ -40,33 +53,36 @@ const authFile = ".auth/playwright.json";
 setup("authenticate", async ({ page, request }) => {
   const { email, password } = SEED_USERS.playwright;
 
-  // 1. Log in via the API (no form interaction) and grab the token.
+  // 1. Log in via the API (no clicking) and get the token.
   const res = await request.post(`${env.apiURL}/users/login`, {
     data: { user: { email, password } },
   });
   expect(res.ok()).toBeTruthy();
   const { user } = await res.json();
 
-  // 2. Write the exact session shape Inkwell restores from on load.
-  const session = {
-    headers: { Authorization: `Token ${user.token}` },
-    isAuth: true,
-    loggedUser: user,
-  };
+  // 2. Write the exact session shape Inkwell reads on load, into localStorage.
+  const session = { headers: { Authorization: `Token ${user.token}` }, isAuth: true, loggedUser: user };
   await page.goto("/");
   await page.evaluate((v) => localStorage.setItem("loggedUser", JSON.stringify(v)), session);
 
-  // 3. Persist cookies + localStorage to disk.
+  // 3. Save cookies + localStorage to a file.
   await page.context().storageState({ path: authFile });
 });
 ```
 
-Why this works: Inkwell's `AuthContext` initializes from
-`localStorage.getItem("loggedUser")`, so a page that loads with that key populated
-is logged in from the first render. We discovered that exact shape by reading the
-app — the kind of small SUT detail integration tests depend on.
+A couple of new things:
+
+- **`page.evaluate(fn, arg)`** runs `fn` *inside the browser page* (where
+  `localStorage` lives) and passes `arg` into it. That's how we set the value the app
+  expects.
+- We discovered the exact `localStorage` shape (`loggedUser`) by **reading Inkwell's
+  source** — Inkwell restores the session from `localStorage.getItem("loggedUser")` on
+  load. Knowing one small detail of the app under test is the essence of integration
+  testing.
 
 ## Wire it up with project dependencies
+
+We tell Playwright "run `setup` before `ui`" using `dependencies`:
 
 ```ts
 // playwright.config.ts
@@ -89,14 +105,15 @@ projects: [
 
 ## Opt a test into the session
 
-Crucially, you choose *per file* whether to start authenticated. Our anonymous tests
-(home, locators, login) stay logged out; only this file loads the saved session:
+You choose **per file** whether to start logged in. Our anonymous tests (home,
+locators, login) stay logged out; only this file loads the saved session, with
+`test.use`:
 
 ```ts
 // src/tests/ui/authenticated.spec.ts
 import { test, expect } from "@playwright/test";
 
-test.use({ storageState: ".auth/playwright.json" });
+test.use({ storageState: ".auth/playwright.json" });   // load the saved session
 
 test("starts already logged in", async ({ page }) => {
   await page.goto("/");
@@ -107,25 +124,25 @@ test("starts already logged in", async ({ page }) => {
 ```
 
 No `LoginPage`, no form, no redirect — the test opens the app and the user is already
-there. Multiply that saving across a hundred authenticated tests.
+there. Multiply that saving across a hundred tests.
 
-> The `.auth/` folder is git-ignored — it holds a live token and is regenerated by
-> the setup project on every run.
+> The `.auth/` folder is git-ignored — it holds a live token and is regenerated by the
+> setup project on every run, so it never goes into version control.
 
 ## When to use which login
 
 - **storageState (this chapter):** the default for *most* authenticated tests — fast,
   shared, set up once.
-- **Logging in through the UI (`LoginPage`):** keep it for the handful of tests whose
-  subject *is* the login flow — you still want to prove the form itself works
-  (Chapter 4's test stays exactly as it was).
+- **Logging in through the form (`LoginPage`):** keep it for the few tests whose
+  subject *is* the login flow — you still want to prove the form itself works (the
+  Chapter 4 test stays exactly as it was).
 
 ## Next up
 
-We've used the API to set up **auth**. Next we generalize that to **all** test data.
+We used the API to set up **auth**. Next we generalise that to **all** test data.
 **Chapter 16 — Seed via API, verify in UI:** create an article through the API in
-milliseconds, then assert it renders in the browser — the integration pattern that
-makes UI suites fast and reliable. Tag: `ch-16`.
+milliseconds, then check it renders in the browser — the pattern that makes UI suites
+fast and reliable. Tag: `ch-16`.
 
 > Following along? Star the [repo](https://github.com/aktibaba/playwright-qa-course)
 > and tell me how many seconds storageState shaved off your suite.

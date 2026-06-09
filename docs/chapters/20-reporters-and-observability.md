@@ -1,6 +1,6 @@
 ---
 title: "Reporters & Observability (Playwright + TypeScript, Ch.20)"
-description: "Make test results legible. Stack the list, HTML, and JUnit reporters; attach traces and context so a failure explains itself; and stamp each run with its environment — so you debug from artifacts, not re-runs."
+description: "What a reporter is and how to make failures explain themselves: stack the list, HTML, and JUnit reporters, attach traces and context, and stamp each run with its environment — so you debug from artifacts, not re-runs."
 tags: [playwright, typescript, testing, webdev]
 series: "Playwright + TypeScript QA Course"
 devto: true
@@ -9,53 +9,54 @@ published: false
 
 # Reporters & Observability
 
-A suite is only as useful as what it tells you when it fails. A red X with no context
-means a re-run; a red X with a trace, a screenshot, and the environment it ran
-against means a fix. This chapter makes failures **self-explanatory** — and grows our
-coverage so there's more worth observing.
+A suite is only as useful as what it tells you when it fails. A red ✘ with no context
+means a re-run; a red ✘ with a screenshot, a recording, and the environment it ran on
+means a *fix*. This chapter makes failures **self-explanatory**.
+
+> A **reporter** is the part of Playwright that turns raw results into output — terminal
+> text, an HTML page, an XML file, whatever you need. You can run several at once.
 
 > Code for this chapter is tagged `ch-20` in the repo:
 > **https://github.com/aktibaba/playwright-qa-course** — see the `reporter` config in
-> `playwright.config.ts` and the new `profiles` / `tags` / `pagination` specs.
+> `playwright.config.ts`.
 
 ## Stack reporters for different audiences
 
-Reporters aren't either/or — list several and each serves a consumer:
+Reporters aren't either/or — list several, and each serves a different consumer:
 
 ```ts
 // playwright.config.ts
 reporter: [
-  ["list"],                                          // humans, live in the terminal
-  ["html", { open: "never" }],                       // rich, browsable, with traces
-  ["junit", { outputFile: "test-results/junit.xml" }], // CI ingests this
+  ["list"],                                             // for you, live in the terminal
+  ["html", { open: "never" }],                          // a rich, browsable report
+  ["junit", { outputFile: "test-results/junit.xml" }],  // an XML file CI understands
 ],
 ```
 
-- **`list`** — readable streaming output while you work.
+- **`list`** — readable, streaming output while you work.
 - **`html`** — the investigative tool: every test, its steps, attached
   screenshots/traces, and the run's metadata. Open it with `npm run test:report`.
-- **`junit`** — XML that GitHub Actions, GitLab, Jenkins, etc. parse to annotate PRs
-  and track history. We wire this into CI next chapter.
-
-(There's also a **`blob`** reporter built for *merging* results from parallel shards —
-we'll reach for it in Chapter 21.)
+- **`junit`** — XML that CI systems (GitHub Actions, GitLab, Jenkins) parse to annotate
+  pull requests and track history. We wire this into CI next chapter.
+- **`blob`** — a special format made for *merging* results from parallel machines
+  (shards); we reach for it in Chapter 21.
 
 ## Failures that explain themselves
 
-We set these once, back in Chapter 6, and they pay off in every report:
+We set two options back in Chapter 6, and they pay off in every report:
 
 ```ts
 use: { trace: "on-first-retry", screenshot: "only-on-failure" }
 ```
 
-On a failure, the HTML report carries the **screenshot** at the point of failure and
-a full **trace** (DOM snapshots, network, console, timeline) for the retry. You
-reconstruct exactly what happened without reproducing it locally — the difference
-between minutes and hours on a CI-only flake.
+On a failure, the HTML report carries the **screenshot** at the moment things broke and
+a full **trace** (DOM snapshots, network, console, a timeline you can scrub) from the
+retry. You reconstruct exactly what happened **without** reproducing it locally — the
+difference between minutes and hours on a CI-only flake.
 
 ## Stamp the run with its environment
 
-Because the config sets `metadata` (Chapter 18), every report says *what it ran
+Because the config sets `metadata` (Chapter 18), every report records *what it ran
 against*:
 
 ```ts
@@ -66,7 +67,8 @@ metadata: { environment: env.name, webURL: env.webURL, apiURL: env.apiURL }
 
 ## Attach your own context
 
-When a test knows something useful, attach it — it shows up inline in the report:
+When a test knows something useful — like the API response that drove an assertion —
+you can **attach** it, and it appears inline in the report:
 
 ```ts
 test("...", async ({ api }, testInfo) => {
@@ -78,17 +80,19 @@ test("...", async ({ api }, testInfo) => {
 });
 ```
 
-Now the response that drove an assertion travels *with* the result.
+`testInfo` is an extra argument Playwright passes to every test with details about the
+current run; `testInfo.attach(...)` saves a file alongside the result. Now the data
+that caused a failure travels *with* it.
 
 ## More coverage to observe
 
-Reports are richer when the suite covers more, so this chapter also broadens the API
-surface — profiles, tags, and pagination — using a **unique tag per test** so the
-filtered results are deterministic under parallelism:
+A report is richer when there's more to observe, so this chapter also broadens the API
+coverage — profiles, tags, and pagination — using a **unique tag per test** so the
+filtered results are deterministic even under parallelism:
 
 ```ts
 test("limit caps the page and the filtered count is exact", async ({ makeArticle, api }) => {
-  const tag = `pg-${Date.now()}`;
+  const tag = `pg-${Date.now()}`;                  // unique → only THIS test's articles
   await makeArticle({ tagList: [tag] });
   await makeArticle({ tagList: [tag] });
   await makeArticle({ tagList: [tag] });
@@ -99,17 +103,17 @@ test("limit caps the page and the filtered count is exact", async ({ makeArticle
 });
 ```
 
-> A finding while writing these: Inkwell's **`offset` was broken** —
-> `?tag=X&limit=2&offset=2` over 3 matches returned **0** items instead of 1,
-> because the API multiplied `offset * limit` (treating offset as a page index),
-> violating the RealWorld contract. Exactly the sort of thing good coverage
-> surfaces — we fix it in the SUT in Chapter 21 and the offset test goes green.
+> A finding while writing these: Inkwell's **`offset` pagination was broken** —
+> `?tag=X&limit=2&offset=2` over 3 matches returned **0** items instead of 1, because
+> the API multiplied `offset * limit` (treating offset as a page number), breaking the
+> RealWorld contract. Exactly the sort of bug good coverage surfaces — we fix it in the
+> app in Chapter 21 and the offset test goes green.
 
 ## Next up
 
 We have results CI can read. **Chapter 21 — CI/CD with GitHub Actions:** stand up the
-dockerized SUT in a workflow, run the suite **sharded** across machines, merge the
-blob reports, and publish the HTML report as an artifact. Tag: `ch-21`.
+dockerized app in a workflow, run the suite **sharded** across machines, merge the
+reports, and publish the HTML report as a downloadable artifact. Tag: `ch-21`.
 
 > Following along? Star the [repo](https://github.com/aktibaba/playwright-qa-course)
 > and tell me which reporter you live in.
